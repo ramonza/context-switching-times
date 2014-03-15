@@ -23,7 +23,7 @@ namespace :scala do
 	end
 	task :run => :compile do
 		cd "scala" do
-			sh "scala ContextSwitch"
+			sh "scala -cp . ContextSwitch"
 		end
 	end
 end
@@ -53,4 +53,16 @@ namespace :erjang do
 	end
 end
 
-task :run_all => ['java:run', 'erlang:run', 'scala:run']
+namespace :haskell do
+	CLEAN.include FileList['haskell/*.o'], FileList['haskell/*.hi'], FileList['haskell/context_switch']
+	task :run do
+		cd 'haskell' do
+			sh "ghc -threaded context_switch.hs"
+			sh "./context_switch"
+		end
+	end
+end
+
+task :run_all => ['java:run', 'erlang:run', 'scala:run', 'haskell:run']
+
+task :default => [:run_all]
