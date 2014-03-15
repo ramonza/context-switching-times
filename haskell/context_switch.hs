@@ -1,24 +1,24 @@
 import Control.Concurrent
 import Control.Monad
 
-ring = 100
+ring_size = 100
 
-new l i = do
-  r <- newEmptyMVar
-  forkIO (thread i l r)
-  return r
+new left index = do
+  right <- newEmptyMVar
+  forkIO (thread index left right)
+  return right
 
 thread :: Int -> MVar Int -> MVar Int -> IO ()
-thread i l r = go
+thread index left right = go
   where go = do
-          m <- takeMVar l
-          putMVar r $! m + 1
+          m <- takeMVar left
+          putMVar right $! m + 1
           go
- 
+
 main = do
-  a <- newMVar 0
-  z <- foldM new a [2..ring]
-  forkIO (thread 1 z a)
+  first_var <- newMVar 0
+  last_var <- foldM new first_var [2..ring_size]
+  forkIO (thread 1 last_var first_var)
   threadDelay 1000000
-  i <- takeMVar a
-  print i
+  m <- takeMVar first_var
+  print m
