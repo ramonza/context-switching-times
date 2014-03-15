@@ -7,3 +7,5 @@ java/out
 *.dump
 *.log
 *.class
+haskell/context_switch
+haskell/context_switch.hi
